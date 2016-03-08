@@ -1,0 +1,10 @@
+{
+    "variants": {
+		"facing=down":  { "model": "advancedrfmachines:Basic_EnergyCell", "x": 180 },
+		"facing=up":  { "model": "advancedrfmachines:Basic_EnergyCell" },
+		"facing=north": { "model": "advancedrfmachines:Basic_EnergyCell", "x": 90, "y": 270 },
+        "facing=south": { "model": "advancedrfmachines:Basic_EnergyCell", "x": 90, "y": 90 },
+        "facing=west":  { "model": "advancedrfmachines:Basic_EnergyCell", "x": 90, "y": 180 },
+        "facing=east":  { "model": "advancedrfmachines:Basic_EnergyCell", "x": 90}
+    }
+}

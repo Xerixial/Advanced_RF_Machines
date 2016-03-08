@@ -1,0 +1,83 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"textures": {
+			"tex": "advancedrfmachines:blocks/Basic_Conduit"
+		},
+		"model": "advancedrfmachines:Basic_Conduit_Center",
+		"uvlock": true
+	},
+	"variants": {
+		"down": {
+			"true": {
+				"submodel": {
+					"pipe_down": {
+						"model": "advancedrfmachines:Basic_Conduit_Part",
+						"x": 90,
+						"uvlock": true
+					}
+				}
+			},
+			"false": { }
+		},
+		"up": {
+			"true": {
+				"submodel": {
+					"pipe_up": {
+						"model": "advancedrfmachines:Basic_Conduit_Part",
+						"x": -90,
+						"uvlock": true
+					}
+				}
+			},
+			"false": { }
+		},
+		"north": {
+			"true": {
+				"submodel": {
+					"pipe_north": {
+						"model": "advancedrfmachines:Basic_Conduit_Part",
+						"uvlock": true
+					}
+				}
+			},
+			"false": { }
+		},
+		"south": {
+			"true": {
+				"submodel": {
+					"pipe_south": {
+						"model": "advancedrfmachines:Basic_Conduit_Part",
+						"y": 180,
+						"uvlock": true
+					}
+				}
+			},
+			"false": { }
+		},
+		"east": {
+			"true": {
+				"submodel": {
+					"pipe_east": {
+						"model": "advancedrfmachines:Basic_Conduit_Part",
+						"y": 90,
+						"uvlock": true
+					}
+				}
+			},
+			"false": { }
+		},
+		"west": {
+			"true": {
+				"submodel": {
+					"pipe_west": {
+						"model": "advancedrfmachines:Basic_Conduit_Part",
+						"y": -90,
+						"uvlock": true
+					}
+				}
+			},
+			"false": { }
+		}
+	}
+}

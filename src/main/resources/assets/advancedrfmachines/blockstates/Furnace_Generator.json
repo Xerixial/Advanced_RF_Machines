@@ -1,0 +1,8 @@
+{
+    "variants": {
+		"facing=north": { "model": "advancedrfmachines:Furnace_Generator" },
+        "facing=south": { "model": "advancedrfmachines:Furnace_Generator", "y": 180 },
+        "facing=west":  { "model": "advancedrfmachines:Furnace_Generator", "y": 270 },
+        "facing=east":  { "model": "advancedrfmachines:Furnace_Generator", "y": 90 }
+    }
+}

@@ -1,0 +1,6 @@
+{
+    "parent":"advancedrfmachines:item/standard_item",
+    "textures": {
+        "layer0":"advancedrfmachines:items/Small_LiOn_Battery"
+    }
+}

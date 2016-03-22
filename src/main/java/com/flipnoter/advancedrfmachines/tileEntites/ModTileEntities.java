@@ -10,11 +10,13 @@ public class ModTileEntities {
     public static void init() {
 
         GameRegistry.registerTileEntity(FurnaceGeneratorTileEntity.class, "Furnace_Generator");
+        GameRegistry.registerTileEntity(BasicSolarPanelTileEntity.class, "Basic_Solar_Panel");
+
         GameRegistry.registerTileEntity(PoweredFurnaceTileEntity.class, "Powered_Furnace");
 
-        GameRegistry.registerTileEntity(BasicConduitTileEntity.class, "Basic_Conduit");
+        //GameRegistry.registerTileEntity(BasicConduitTileEntity.class, "Basic_Conduit");
 
-        GameRegistry.registerTileEntity(BasicEnergyCellTileEntity.class, "Basic_EnergyCell");
+        //GameRegistry.registerTileEntity(BasicEnergyCellTileEntity.class, "Basic_EnergyCell");
 
     }
 }

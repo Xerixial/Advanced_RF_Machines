@@ -530,13 +530,10 @@ public class PoweredFurnaceTileEntity extends TileEntity implements ISidedInvent
 
                 if(pe.canConnectEnergy(otherDir)) {
 
-                    storage.receiveEnergy(pe.extractEnergy(otherDir, (int)deficit, false), false);
+                    //storage.receiveEnergy(pe.extractEnergy(otherDir, (int)deficit, false), false);
 
                     worldObj.markBlockForUpdate(pos);
                     markDirty();
-
-                    worldObj.markBlockForUpdate(coord);
-                    e.markDirty();
 
                 }
             }

@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class ModBlocks {
 
     public static Block FurnaceGenerator;
+    public static Block BasicSolarPanel;
+
     public static Block PoweredFurnace;
 
     public static Block BasicConduit;
@@ -18,11 +20,13 @@ public class ModBlocks {
     public static void init() {
 
         register(FurnaceGenerator = new FurnaceGenerator());
+        register(BasicSolarPanel = new BasicSolarPanel());
+
         register(PoweredFurnace = new PoweredFurnace());
 
-        register(BasicConduit = new BasicConduit());
+        //register(BasicConduit = new BasicConduit());
 
-        register(BasicEnergyCell = new BasicEnergyCell());
+        //register(BasicEnergyCell = new BasicEnergyCell());
 
     }
 

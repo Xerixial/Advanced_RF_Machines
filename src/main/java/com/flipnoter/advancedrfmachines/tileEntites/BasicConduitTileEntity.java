@@ -22,12 +22,27 @@ public class BasicConduitTileEntity extends TileEntity implements ITickable, IEn
     @Override
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate) {
 
+        lastExtract = facing;
+
+        worldObj.markBlockForUpdate(pos);
+        markDirty();
+
         return storage.receiveEnergy(maxReceive, simulate);
 
     }
 
     @Override
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
+
+        if(lastExtract == from) {
+
+            lastExtract = null;
+
+            return 0;
+
+        }
+
+        lastExtract = from;
 
         return storage.extractEnergy(maxExtract, simulate);
 
@@ -102,17 +117,11 @@ public class BasicConduitTileEntity extends TileEntity implements ITickable, IEn
                 tryGetEnergy(EnumFacing.EAST);
                 tryGetEnergy(EnumFacing.DOWN);
 
-                if(storage.getEnergyStored() < storage.getMaxEnergyStored())
-                    lastExtract = null;
-
             }
         }
     }
 
     void tryGetEnergy(EnumFacing dir) {
-
-        if(lastExtract == dir || storage.getEnergyStored() == storage.getMaxEnergyStored())
-            return;
 
         float deficit = Math.max(storage.getMaxEnergyStored() - storage.getEnergyStored(), storage.getMaxExtract());
 
@@ -155,23 +164,11 @@ public class BasicConduitTileEntity extends TileEntity implements ITickable, IEn
 
                 IEnergyProvider pe = (IEnergyProvider)e;
 
-                if(pe.canConnectEnergy(otherDir) && !(e instanceof BasicConduitTileEntity)) {
+                int extract = Math.min(storage.getMaxReceive(), pe.getEnergyStored(otherDir));
 
-                    storage.receiveEnergy(pe.extractEnergy(otherDir, (int)deficit, false), false);
+                if(pe.canConnectEnergy(otherDir) && storage.getEnergyStored() < pe.getEnergyStored(otherDir)) {
 
-                    worldObj.markBlockForUpdate(pos);
-                    markDirty();
-
-                    worldObj.markBlockForUpdate(coord);
-                    e.markDirty();
-
-                }
-
-                if(pe.canConnectEnergy(otherDir) && e instanceof BasicConduitTileEntity && storage.getEnergyStored() < pe.getEnergyStored(otherDir)) {
-
-                    lastExtract = dir;
-
-                    storage.receiveEnergy(pe.extractEnergy(otherDir, (int)deficit, false), false);
+                    storage.receiveEnergy(pe.extractEnergy(otherDir, extract, false), false);
 
                     worldObj.markBlockForUpdate(pos);
                     markDirty();

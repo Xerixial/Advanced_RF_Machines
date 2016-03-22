@@ -1,4 +1,8 @@
 tile.Furnace_Generator.name=Furnace Generator
-item.T1_Upgrade_Efficiency.name=Tier 1 Efficiency Upgrade
+tile.Basic_Solar_Panel.name=Basic Solar Panel
+tile.Powered_Furnace.name=Powered Furnace
+item.T1UpgradeEfficiency.name=Tier 1 Efficiency Upgrade
+item.T2UpgradeEfficiency.name=Tier 2 Efficiency Upgrade
+item.T3UpgradeEfficiency.name=Tier 3 Efficiency Upgrade
 item.Small_LiOn_Battery.name=Small Li-On Battery
 itemGroup.Advanced_RF_Machines=Advanced RF Machines

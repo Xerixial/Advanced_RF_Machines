@@ -1,6 +1,0 @@
-{
-    "parent":"advancedrfmachines:item/standard_item",
-    "textures": {
-        "layer0":"advancedrfmachines:items/T1_Upgrade_Efficiency"
-    }
-}

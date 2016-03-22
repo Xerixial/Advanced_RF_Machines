@@ -1,11 +1,12 @@
 package com.flipnoter.advancedrfmachines.tileEntites;
 
-import cofh.api.energy.*;
-import com.flipnoter.advancedrfmachines.blocks.BasicEnergyCell;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyContainerItem;
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -15,77 +16,33 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 
 /**
- * Created by Connor on 3/5/2016.
+ * Created by Connor on 3/21/2016.
  */
-public class BasicEnergyCellTileEntity extends TileEntity implements ISidedInventory, ITickable, IEnergyHandler {
+public class BasicSolarPanelTileEntity extends TileEntity implements ISidedInventory, ITickable, IEnergyProvider {
+
+    private int RFPT = 1;
 
     private ItemStack[] Inventory;
-    private String InvName = "Basic Energy Cell";
+    private String InvName = "Basic Solar Panel";
 
-    private EnumFacing lastExtract;
+    private EnergyStorage storage = new EnergyStorage(100000, 0, 100);
 
-    private EnergyStorage storage = new EnergyStorage(100000, 1000);
-
-    public BasicEnergyCellTileEntity() {
+    public BasicSolarPanelTileEntity() {
 
         Inventory = new ItemStack[getSizeInventory()];
 
     }
 
     @Override
-    public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate) {
+    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
 
-        lastExtract = facing;
+        if(getStackInSlot(2) != null)
+            storage.setMaxExtract((int)(100 + (10f * (getStackInSlot(2).stackSize / 8))));
 
-        worldObj.markBlockForUpdate(pos);
-        markDirty();
+        if(!worldObj.isRemote)
+            worldObj.markBlockForUpdate(pos);
 
-        return storage.receiveEnergy(maxReceive, simulate);
-
-    }
-
-    @Override
-    public int extractEnergy(EnumFacing facing, int maxExtract, boolean simulate) {
-
-        if(lastExtract == facing) {
-
-            lastExtract = null;
-
-            return 0;
-
-        }
-
-        lastExtract = facing;
-
-        if(!canConnectEnergy(facing))
-            return 0;
-
-        worldObj.markBlockForUpdate(pos);
-        markDirty();
-
-        int meta = worldObj.getBlockState(pos).getBlock().getMetaFromState(worldObj.getBlockState(pos));
-
-        EnumFacing front = EnumFacing.values()[meta];
-
-        if(front == EnumFacing.DOWN && facing == EnumFacing.UP)
-            return storage.extractEnergy(maxExtract, simulate);
-
-        if(front == EnumFacing.UP && facing == EnumFacing.DOWN)
-            return storage.extractEnergy(maxExtract, simulate);
-
-        if(front == EnumFacing.NORTH && facing == EnumFacing.WEST)
-            return storage.extractEnergy(maxExtract, simulate);
-
-        if(front == EnumFacing.SOUTH && facing == EnumFacing.EAST)
-            return storage.extractEnergy(maxExtract, simulate);
-
-        if(front == EnumFacing.WEST && facing == EnumFacing.SOUTH)
-            return storage.extractEnergy(maxExtract, simulate);
-
-        if(front == EnumFacing.EAST && facing == EnumFacing.NORTH)
-            return storage.extractEnergy(maxExtract, simulate);
-
-        return 0;
+        return storage.extractEnergy(maxExtract, simulate);
 
     }
 
@@ -106,23 +63,7 @@ public class BasicEnergyCellTileEntity extends TileEntity implements ISidedInven
     @Override
     public boolean canConnectEnergy(EnumFacing from) {
 
-        int meta = worldObj.getBlockState(pos).getBlock().getMetaFromState(worldObj.getBlockState(pos));
-
-        EnumFacing front = EnumFacing.values()[meta];
-
-        if(front == EnumFacing.DOWN || front == EnumFacing.UP)
-            if(from == EnumFacing.DOWN || from == EnumFacing.UP)
-                return true;
-
-        if(front == EnumFacing.NORTH || front == EnumFacing.SOUTH)
-            if(from == EnumFacing.EAST || from == EnumFacing.WEST)
-                return true;
-
-        if(front == EnumFacing.EAST || front == EnumFacing.WEST)
-            if(from == EnumFacing.NORTH || from == EnumFacing.SOUTH)
-                return true;
-
-        return false;
+        return true;
 
     }
 
@@ -150,7 +91,7 @@ public class BasicEnergyCellTileEntity extends TileEntity implements ISidedInven
     @Override
     public String getName() {
 
-        return hasCustomName() ? InvName : "container.Basic_EnergyCell_TileEntity.name";
+        return hasCustomName() ? InvName : "container.Basic_Solar_Panel_TileEntity.name";
 
     }
 
@@ -177,7 +118,7 @@ public class BasicEnergyCellTileEntity extends TileEntity implements ISidedInven
     @Override
     public int getSizeInventory() {
 
-        return 2;
+        return 5;
 
     }
 
@@ -305,7 +246,6 @@ public class BasicEnergyCellTileEntity extends TileEntity implements ISidedInven
         return 0;
 
     }
-
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
 
@@ -389,26 +329,59 @@ public class BasicEnergyCellTileEntity extends TileEntity implements ISidedInven
 
         if(!worldObj.isRemote) {
 
-            if(storage.getEnergyStored() < storage.getMaxEnergyStored()){
-                // get power from neighbors who have more than this conductor
-                tryGetEnergy(EnumFacing.UP);
-                tryGetEnergy(EnumFacing.NORTH);
-                tryGetEnergy(EnumFacing.WEST);
-                tryGetEnergy(EnumFacing.SOUTH);
-                tryGetEnergy(EnumFacing.EAST);
-                tryGetEnergy(EnumFacing.DOWN);
+            if(getStackInSlot(4) != null)
+                if(getStackInSlot(4).getItem() instanceof IEnergyContainerItem) {
 
-            }
-
-            if(getStackInSlot(5) != null)
-                if(getStackInSlot(5).getItem() instanceof IEnergyContainerItem) {
-
-                    IEnergyContainerItem item = (IEnergyContainerItem) getStackInSlot(5).getItem();
-                    item.extractEnergy(getStackInSlot(5), storage.receiveEnergy(item.extractEnergy(getStackInSlot(5), storage.getEnergyStored(), true), false), false);
+                    IEnergyContainerItem item = (IEnergyContainerItem)getStackInSlot(4).getItem();
+                    storage.extractEnergy(item.receiveEnergy(getStackInSlot(4), storage.getEnergyStored(), false), false);
 
                     upd = true;
 
                 }
+
+            if(worldObj.canSeeSky(pos.add(0, 1, 0))) {
+
+                float multiplicator = 1.5f;
+                float displacement = 1.2f;
+                float mSunIntensity = 0f;
+
+                float celestialAngleRadians = worldObj.getCelestialAngleRadians(1.0f);
+
+                if(celestialAngleRadians > Math.PI)
+                    celestialAngleRadians = (2 * 3.141592f - celestialAngleRadians);
+
+                mSunIntensity = multiplicator * MathHelper.cos(celestialAngleRadians / displacement);
+                mSunIntensity = Math.max(0, mSunIntensity);
+                mSunIntensity = Math.min(1, mSunIntensity);
+
+                if(mSunIntensity > 0) {
+
+                    if(worldObj.isRaining())
+                        mSunIntensity *= 0.5f;
+
+                    if(worldObj.isThundering())
+                        mSunIntensity *= 0.25f;
+
+                    storage.setEnergyStored(storage.getEnergyStored() + (int)(RFPT * mSunIntensity));
+
+                    upd = true;
+
+                }
+            }
+
+            if((storage.getEnergyStored() > 0)) {
+
+                for(int i = 0; i < 6; i++){
+
+                    TileEntity tile = worldObj.getTileEntity(new BlockPos(pos.getX() + EnumFacing.values()[i].getFrontOffsetX(),
+                            pos.getY() + EnumFacing.values()[i].getFrontOffsetY(),
+                            pos.getZ() + EnumFacing.values()[i].getFrontOffsetZ()));
+
+                    if(tile != null && tile instanceof IEnergyReceiver)
+                        storage.extractEnergy(((IEnergyReceiver)tile).receiveEnergy(EnumFacing.values()[i].getOpposite(), storage.extractEnergy(storage.getMaxExtract(), true), false), false);
+
+                }
+            }
         }
 
         if(upd) {
@@ -416,66 +389,6 @@ public class BasicEnergyCellTileEntity extends TileEntity implements ISidedInven
             worldObj.markBlockForUpdate(pos);
             markDirty();
 
-        }
-    }
-
-    void tryGetEnergy(EnumFacing dir) {
-
-        float deficit = Math.max(storage.getMaxEnergyStored() - storage.getEnergyStored(), storage.getMaxExtract());
-
-        if(deficit > 0) {
-
-            EnumFacing otherDir = null;
-            BlockPos coord = null;
-
-            switch(dir) {
-
-                case UP:
-                    coord = getPos().add(0,1,0);
-                    otherDir = EnumFacing.DOWN;
-                    break;
-                case DOWN:
-                    coord = getPos().add(0,-1,0);
-                    otherDir = EnumFacing.UP;
-                    break;
-                case NORTH:
-                    coord = getPos().add(0,0,-1);
-                    otherDir = EnumFacing.SOUTH;
-                    break;
-                case SOUTH:
-                    coord = getPos().add(0,0,1);
-                    otherDir = EnumFacing.NORTH;
-                    break;
-                case EAST:
-                    coord = getPos().add(1,0,0);
-                    otherDir = EnumFacing.WEST;
-                    break;
-                case WEST:
-                    coord = getPos().add(-1,0,0);
-                    otherDir = EnumFacing.EAST;
-
-            }
-
-            TileEntity e = getWorld().getTileEntity(coord);
-
-            if(e instanceof IEnergyHandler || e instanceof IEnergyProvider) {
-
-                IEnergyProvider pe = (IEnergyProvider)e;
-
-                int extract = Math.min(storage.getMaxExtract(), ((IEnergyProvider)e).getEnergyStored(otherDir));
-
-                if(pe.canConnectEnergy(otherDir) && !(e instanceof BasicConduitTileEntity)) {
-
-                    storage.receiveEnergy(pe.extractEnergy(otherDir, extract, false), false);
-
-                }
-
-                if(pe.canConnectEnergy(otherDir) && e instanceof BasicConduitTileEntity) {
-
-                    storage.receiveEnergy(pe.extractEnergy(otherDir, extract, false), false);
-
-                }
-            }
         }
     }
 }

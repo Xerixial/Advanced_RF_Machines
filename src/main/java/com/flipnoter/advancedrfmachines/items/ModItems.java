@@ -10,10 +10,10 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public class ModItems {
 
-    public static Item T1UpgradeEfficiency; //Decrease consumption, Increase Generation
-    public static Item T1UpgradeTransfer;
-    public static Item T1UpgradeSpeed;
-    public static Item T1UpgradeStorage;
+    public static Item UpgradeEfficiency; //Decrease consumption, Increase Generation
+    public static Item UpgradeTransfer;
+    public static Item UpgradeSpeed;
+    public static Item UpgradeStorage;
 
     public static Item SmallLiOnBattery;
 
@@ -29,7 +29,7 @@ public class ModItems {
 
     public static void init() {
 
-        register(T1UpgradeEfficiency = new T1UpgradeEfficiency());
+        register(UpgradeEfficiency = new UpgradeEfficiency());
 
         register(SmallLiOnBattery = new SmallLiOnBattery());
 

@@ -1,9 +1,6 @@
 package com.flipnoter.advancedrfmachines.tileEntites;
 
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyContainerItem;
-import cofh.api.energy.IEnergyHandler;
-import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.*;
 import com.flipnoter.advancedrfmachines.blocks.FurnaceGenerator;
 import com.flipnoter.advancedrfmachines.items.ModItems;
 import com.flipnoter.advancedrfmachines.items.SmallLiOnBattery;
@@ -51,6 +48,9 @@ public class FurnaceGeneratorTileEntity extends TileEntity implements ISidedInve
 
         if(getStackInSlot(2) != null)
             storage.setMaxExtract((int)(100 + (10f * (getStackInSlot(2).stackSize / 8))));
+
+        if(!worldObj.isRemote)
+            worldObj.markBlockForUpdate(pos);
 
         return storage.extractEnergy(maxExtract, simulate);
 
@@ -460,6 +460,20 @@ public class FurnaceGeneratorTileEntity extends TileEntity implements ISidedInve
                     }
 
                     upd = true;
+
+                }
+            }
+
+            if((storage.getEnergyStored() > 0)) {
+
+                for(int i = 0; i < 6; i++){
+
+                    TileEntity tile = worldObj.getTileEntity(new BlockPos(pos.getX() + EnumFacing.values()[i].getFrontOffsetX(),
+                            pos.getY() + EnumFacing.values()[i].getFrontOffsetY(),
+                            pos.getZ() + EnumFacing.values()[i].getFrontOffsetZ()));
+
+                    if(tile != null && tile instanceof IEnergyReceiver)
+                        storage.extractEnergy(((IEnergyReceiver)tile).receiveEnergy(EnumFacing.values()[i].getOpposite(), storage.extractEnergy(storage.getMaxExtract(), true), false), false);
 
                 }
             }

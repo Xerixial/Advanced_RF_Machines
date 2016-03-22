@@ -17,11 +17,13 @@ public class BlockRenderRegister {
     public static void registerBlockRenderer() {
 
         register(ModBlocks.FurnaceGenerator);
+        register(ModBlocks.BasicSolarPanel);
+
         register(ModBlocks.PoweredFurnace);
 
-        register(ModBlocks.BasicConduit);
+        //register(ModBlocks.BasicConduit);
 
-        register(ModBlocks.BasicEnergyCell);
+        //register(ModBlocks.BasicEnergyCell);
 
     }
 

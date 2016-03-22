@@ -1,9 +1,6 @@
 package com.flipnoter.advancedrfmachines.waila;
 
-import com.flipnoter.advancedrfmachines.tileEntites.BasicConduitTileEntity;
-import com.flipnoter.advancedrfmachines.tileEntites.BasicEnergyCellTileEntity;
-import com.flipnoter.advancedrfmachines.tileEntites.FurnaceGeneratorTileEntity;
-import com.flipnoter.advancedrfmachines.tileEntites.PoweredFurnaceTileEntity;
+import com.flipnoter.advancedrfmachines.tileEntites.*;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
@@ -20,9 +17,10 @@ public class Waila {
 
     public static void callbackRegister(IWailaRegistrar registrar) {
 
-        registrar.registerBodyProvider(new WailaProviderPowerSender(), BasicConduitTileEntity.class);
+        //registrar.registerBodyProvider(new WailaProviderPowerSender(), BasicConduitTileEntity.class);
         registrar.registerBodyProvider(new WailaProviderPowerSender(), FurnaceGeneratorTileEntity.class);
-        registrar.registerBodyProvider(new WailaProviderPowerSender(), BasicEnergyCellTileEntity.class);
+        registrar.registerBodyProvider(new WailaProviderPowerSender(), BasicSolarPanelTileEntity.class);
+        //registrar.registerBodyProvider(new WailaProviderPowerSender(), BasicEnergyCellTileEntity.class);
         registrar.registerBodyProvider(new WailaProviderPowerReciever(), PoweredFurnaceTileEntity.class);
 
     }

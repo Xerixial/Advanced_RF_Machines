@@ -1,9 +1,7 @@
 package com.flipnoter.advancedrfmachines.blocks;
 
-import com.flipnoter.advancedrfmachines.advancedrfmachines;
-import com.flipnoter.advancedrfmachines.gui.ModGUIHandler;
+import com.flipnoter.advancedrfmachines.items.ModItems;
 import com.flipnoter.advancedrfmachines.tileEntites.BasicSolarPanelTileEntity;
-import com.flipnoter.advancedrfmachines.tileEntites.FurnaceGeneratorTileEntity;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -26,6 +24,7 @@ public class BasicSolarPanel extends BlockContainer {
         super(Material.rock);
         this.setUnlocalizedName("Basic_Solar_Panel");
         this.isBlockContainer = true;
+        this.setCreativeTab(ModItems.ADVRFMTab);
 
     }
 

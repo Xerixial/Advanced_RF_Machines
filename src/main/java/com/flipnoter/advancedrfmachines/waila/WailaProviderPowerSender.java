@@ -2,6 +2,7 @@ package com.flipnoter.advancedrfmachines.waila;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import com.flipnoter.advancedrfmachines.blocks.FurnaceGenerator;
 import com.flipnoter.advancedrfmachines.tileEntites.BasicConduitTileEntity;
 import com.flipnoter.advancedrfmachines.tileEntites.FurnaceGeneratorTileEntity;
 import mcp.mobius.waila.api.IWailaConfigHandler;

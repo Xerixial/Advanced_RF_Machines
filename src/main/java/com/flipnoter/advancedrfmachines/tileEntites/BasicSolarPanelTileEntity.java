@@ -343,7 +343,7 @@ public class BasicSolarPanelTileEntity extends TileEntity implements ISidedInven
 
                 float multiplicator = 1.5f;
                 float displacement = 1.2f;
-                float mSunIntensity = 0f;
+                float mSunIntensity;
 
                 float celestialAngleRadians = worldObj.getCelestialAngleRadians(1.0f);
 

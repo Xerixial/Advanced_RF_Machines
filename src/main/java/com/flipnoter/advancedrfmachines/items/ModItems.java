@@ -30,6 +30,7 @@ public class ModItems {
     public static void init() {
 
         register(UpgradeEfficiency = new UpgradeEfficiency());
+        register(UpgradeStorage = new UpgradeStorage());
 
         register(SmallLiOnBattery = new SmallLiOnBattery());
 

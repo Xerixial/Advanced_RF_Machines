@@ -11,13 +11,13 @@ import java.util.List;
 /**
  * Created by Connor on 3/6/2016.
  */
-public class UpgradeEfficiency extends Item {
+public class UpgradeStorage extends Item {
 
-    public UpgradeEfficiency() {
+    public UpgradeStorage() {
 
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
-        this.setUnlocalizedName("UpgradeEfficiency");
+        this.setUnlocalizedName("UpgradeStorage");
         this.setCreativeTab(ModItems.ADVRFMTab);
 
     }
@@ -34,11 +34,11 @@ public class UpgradeEfficiency extends Item {
 
         if(stack.getMetadata() >= 0 && stack.getMetadata() <= 3) {
 
-            return "item.T" + (stack.getMetadata() + 1) + "UpgradeEfficiency";
+            return "item.T" + (stack.getMetadata() + 1) + "UpgradeStorage";
 
         }
 
-        return "Invalid_Efficiency_Upgrade";
+        return "Invalid_Storage_Upgrade";
 
     }
 

@@ -17,21 +17,23 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import org.lwjgl.Sys;
 
 /**
  * Created by Connor on 3/5/2016.
  */
 public class PoweredFurnaceTileEntity extends TileEntity implements ISidedInventory, ITickable, IEnergyReceiver {
 
-    private int buffer, fullBurn = 200, RFPT = 10;
+    private int buffer, fullBurn = 200, RFPT = 10, BASESTOR = 100000;
 
     private static boolean converting;
 
     private ItemStack[] Inventory;
     private String InvName = "Powered Furnace";
 
-    private EnergyStorage storage = new EnergyStorage(100000, 100);
+    private EnergyStorage storage = new EnergyStorage(BASESTOR, 100, 0);
 
     public PoweredFurnaceTileEntity() {
 
@@ -411,23 +413,35 @@ public class PoweredFurnaceTileEntity extends TileEntity implements ISidedInvent
         }
     }
 
+    void modifyStorage() {
+
+        ItemStack stack = getStackInSlot(3);
+
+        if(storage.getMaxEnergyStored() != BASESTOR + (int)((float)BASESTOR * ((float)stack.stackSize * (0.25f * (float)(stack.getMetadata() + 1)))))
+            storage.setCapacity(BASESTOR + (int)((float)BASESTOR * ((float)stack.stackSize * (0.25f * (float)(stack.getMetadata() + 1)))));
+
+    }
+
     @Override
     public void update() {
 
         boolean upd = false;
 
+        if(getStackInSlot(3) != null) {
+
+            modifyStorage();
+
+            upd = true;
+
+        }
+        else
+        {
+
+            storage.setCapacity(BASESTOR);
+
+        }
+
         if(!worldObj.isRemote) {
-
-            if(storage.getEnergyStored() < storage.getMaxEnergyStored()){
-                // get power from neighbors who have more than this conductor
-                tryGetEnergy(EnumFacing.UP);
-                tryGetEnergy(EnumFacing.NORTH);
-                tryGetEnergy(EnumFacing.WEST);
-                tryGetEnergy(EnumFacing.SOUTH);
-                tryGetEnergy(EnumFacing.EAST);
-                tryGetEnergy(EnumFacing.DOWN);
-
-            }
 
             if(getStackInSlot(5) != null)
                 if(getStackInSlot(5).getItem() instanceof IEnergyContainerItem) {
@@ -451,7 +465,7 @@ public class PoweredFurnaceTileEntity extends TileEntity implements ISidedInvent
 
                     buffer--;
 
-                    storage.setEnergyStored(storage.getEnergyStored() - RFPT);
+                    storage.setEnergyStored(storage.getEnergyStored() - (int)(RFPT / getEffMod()));
 
                     if(buffer == 0) {
 
@@ -482,61 +496,6 @@ public class PoweredFurnaceTileEntity extends TileEntity implements ISidedInvent
             worldObj.markBlockForUpdate(pos);
             markDirty();
 
-        }
-    }
-
-    void tryGetEnergy(EnumFacing dir) {
-
-        float deficit = Math.max(storage.getMaxEnergyStored() - storage.getEnergyStored(), storage.getMaxExtract());
-
-        if(deficit > 0) {
-
-            EnumFacing otherDir = null;
-            BlockPos coord = null;
-
-            switch(dir) {
-
-                case UP:
-                    coord = getPos().add(0,1,0);
-                    otherDir = EnumFacing.DOWN;
-                    break;
-                case DOWN:
-                    coord = getPos().add(0,-1,0);
-                    otherDir = EnumFacing.UP;
-                    break;
-                case NORTH:
-                    coord = getPos().add(0,0,-1);
-                    otherDir = EnumFacing.SOUTH;
-                    break;
-                case SOUTH:
-                    coord = getPos().add(0,0,1);
-                    otherDir = EnumFacing.NORTH;
-                    break;
-                case EAST:
-                    coord = getPos().add(1,0,0);
-                    otherDir = EnumFacing.WEST;
-                    break;
-                case WEST:
-                    coord = getPos().add(-1,0,0);
-                    otherDir = EnumFacing.EAST;
-
-            }
-
-            TileEntity e = getWorld().getTileEntity(coord);
-
-            if(e instanceof IEnergyHandler || e instanceof IEnergyProvider) {
-
-                IEnergyProvider pe = (IEnergyProvider)e;
-
-                if(pe.canConnectEnergy(otherDir)) {
-
-                    //storage.receiveEnergy(pe.extractEnergy(otherDir, (int)deficit, false), false);
-
-                    worldObj.markBlockForUpdate(pos);
-                    markDirty();
-
-                }
-            }
         }
     }
 }

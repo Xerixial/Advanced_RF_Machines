@@ -28,14 +28,14 @@ import java.io.Console;
  */
 public class FurnaceGeneratorTileEntity extends TileEntity implements ISidedInventory, ITickable, IEnergyProvider {
 
-    private int buffer, fullBurn, RFPT = 10;
+    private int buffer, fullBurn, RFPT = 10, BASESTOR = 100000;
 
     private static boolean converting;
 
     private ItemStack[] Inventory;
     private String InvName = "Furnace Generator";
 
-    private EnergyStorage storage = new EnergyStorage(100000, 0, 100);
+    private EnergyStorage storage = new EnergyStorage(BASESTOR, 0, 100);
 
     public FurnaceGeneratorTileEntity() {
 
@@ -383,6 +383,12 @@ public class FurnaceGeneratorTileEntity extends TileEntity implements ISidedInve
 
     }
 
+    public int getRFPT() {
+
+        return (int)(RFPT * getEffMod());
+
+    }
+
     public int getTimeRemaining() {
 
         return buffer;
@@ -406,10 +412,33 @@ public class FurnaceGeneratorTileEntity extends TileEntity implements ISidedInve
 
     }
 
+    void modifyStorage() {
+
+        ItemStack stack = getStackInSlot(2);
+
+        if(storage.getMaxEnergyStored() != BASESTOR + (int)((float)BASESTOR * ((float)stack.stackSize * (0.25f * (float)(stack.getMetadata() + 1)))))
+            storage.setCapacity(BASESTOR + (int)((float)BASESTOR * ((float)stack.stackSize * (0.25f * (float)(stack.getMetadata() + 1)))));
+
+    }
+
     @Override
     public void update() {
 
         boolean upd = false;
+
+        if(getStackInSlot(2) != null) {
+
+            modifyStorage();
+
+            upd = true;
+
+        }
+        else
+        {
+
+            storage.setCapacity(BASESTOR);
+
+        }
 
         if(!worldObj.isRemote) {
 
